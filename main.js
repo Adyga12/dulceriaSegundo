@@ -31,5 +31,21 @@ class dulces {
 
   const container = new dulces();
   
-  container.saveObj({id: 1, title: "lucas muecas", price: 112, thumbail: "img.jpg"});
-  console.log(container.getAll());
+  container.saveObj({id: 1, nombre: "Pulparindo", cantidad: 30, precio: 70});
+  ({id: 2, nombre: "Pelon Pelorico", cantidad: 15,precio: 120});  
+  ({id: 3, nombre: "Lucas muecas", cantidad: 8, precio: 100});  
+  ({id: 4, nombre: "Pica fresas", cantidad: 50,precio: 90});  
+  ({id: 5, nombre: "Rockaleta", cantidad: 15,precio: 95});  
+  ({id: 6, nombre: "Skwinkles", cantidad: 8,precio: 85});  
+
+console.log(container.getAll());
+
+var dulceNuevo= new dulces(id:7, nombre:"doritos", cantidad: 7, precio: 105);
+console.log(container.saveObj(dulceNuevo));
+console.log(container.getAll());
+
+console.log(container.deleteById(7));
+console.log(container.getAll());
+
+console.log(container.deleteAll());
+console.log(container.getAll());
