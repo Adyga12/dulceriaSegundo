@@ -1,51 +1,83 @@
-class dulces {
-    constructor(id, nombre, cantidad, precio) {
-      this.caramelos = []
+const fs=require('fs').promises;
+
+class container {
+    #array;
+    #file
+    constructor(road) {
+        this.#array = [];
+        this.#file = road;
+        }  
+       async save (id, nombre, cantidad, precio) {
+            const obj = {
+                id: id,
+                nombre:nombre,
+                cantidad: cantidad,
+                precio: precio
+            };
+            try {
+                this.#array.push(obj);
+                await fs.writeFile(this.#file, JSON.stringify(this.#array, null, '\t'));
+            } catch (error) {
+                throw new Error ('Error en el metodo save');
+            }
+        }
+
+    async getById(id){ 
+        try{
+            const array= JSON.parse (await fs.readFile (this.#file, 'utf-8'));
+            const obj = array.find (element => element.id === id);
+            if (!obj){
+                return null;
+            }
+        return obj;
+    }
+      catch (error) {
+        throw new Error ('elemento con id ${id} no encontrado');
+      }
     }
 
-    getById(id){
-        return this.caramelos.find(x => x.id === id);
+    async getAll(){
+        try {
+            return JSON.parse (await fs.readFile (this.#file, 'utf-8'));
+        } catch (error)
+ {
+    throw new Error ('Error en el metodo getAll');
+ }        
     }
 
-    getAll(){
-        return this.caramelos;
-    }
-
-    saveObj(obj){
-        this.caramelos.push(obj);
-    }
-
-    deleteById(num){
-        let i = this.caramelos.find(x=> x.id === num);
-        let j = this.caramelos.indexOf(i);
-        this.caramelos.splice(j, 1);
-        return this.caramelos;
-    }
-
-    deleteAll(){
-        while (this.caramelos.length > 0) {
-            this.caramelos.pop();
+    async deleteById(id){
+        try {
+            const array = JSON.parse(await fs.readFile (this.#file, 'utf-8'));
+            await fs.writeFile(this.#file, JSON.stringify(array.filter(element => element.id!== id)));
+        } catch (error){
+            throw new error('Error en el metodo de deletebyId');
         }
     }
+
+    async deleteAll(){
+        try { await fs.writeFile(this.#file, '[]');
+    } catch (error){
+        throw new error('Error en el metodo deleteAll')
+        }  
+    }
   }
-
-  const container = new dulces();
+  async function test(){
+    await fs.writeFile('./productos.txt', '[]');
   
-  container.saveObj({id: 1, nombre: "Pulparindo", cantidad: 30, precio: 70});
-  ({id: 2, nombre: "Pelon Pelorico", cantidad: 15,precio: 120});  
-  ({id: 3, nombre: "Lucas muecas", cantidad: 8, precio: 100});  
-  ({id: 4, nombre: "Pica fresas", cantidad: 50,precio: 90});  
-  ({id: 5, nombre: "Rockaleta", cantidad: 15,precio: 95});  
-  ({id: 6, nombre: "Skwinkles", cantidad: 8,precio: 85});  
-
-console.log(container.getAll());
-
-var dulceNuevo= new dulces(id:7, nombre:"doritos", cantidad: 7, precio: 105);
-console.log(container.saveObj(dulceNuevo));
-console.log(container.getAll());
-
-console.log(container.deleteById(7));
-console.log(container.getAll());
-
-console.log(container.deleteAll());
-console.log(container.getAll());
+const element = new container('./productos.txt');
+try{
+    await element.save (1, 'Pulparindo', 30, 70);
+    await element.save (2, 'Pelon Pelorico', 15, 120);
+    await element.save (3, 'Lucas muecas', 8, 100);
+    await element.save (4, 'Pica fresas', 50, 90);
+    await element.save (5, 'Rockaleta', 15, 95);
+    await element.save (6, 'Skwinkles', 8, 85);
+  
+  const elem= await 
+  element.getById(2);
+  console.log(elem);
+}catch (error){
+    throw new error ('Error al llamar a los metodos en la funcion test');
+ }
+} 
+test ();
